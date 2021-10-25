@@ -213,22 +213,41 @@ def crop_image(request, *args, **kwargs):
 
 
 def account_view(request, *args, **kwargs):
-	pass
-# 	context = {}
-# 	user_id = kwargs.get("user_id")
-# 	try:
-# 		account = Account.objects.get(pk=user_id)
-# 	except:
-# 		return HttpResponse("Something went wrong.")
-# 	if account:
-# 		context['id'] = account.id
-# 		context['username'] = account.username
-# 		context['email'] = account.email
-# 		context['profile_image'] = account.profile_image.url
-# 		context['hide_email'] = account.hide_email
-# 		# Define template variables
-# 		friend_requests = None
-# 		user = request.user
-# 		context['BASE_URL'] = settings.BASE_URL
-# 		return render(request, "account/account.html", context)
+	"""
+	- Logic 
+		is_self
+		is_friend
+			-1: NO_REQUEST_SENT
+			0: THEM_SENT_TO_YOU
+			1: YOU_SENT_TO_THEM
+	"""
+	context = {}
+	user_id = kwargs.get("user_id")
+	try:
+		account = Account.objects.get(pk=user_id)
+	except:
+		return HttpResponse("Something went wrong.")
+	if account:
+		context['id'] = account.id
+		context['username'] = account.username
+		context['email'] = account.email
+		context['profile_image'] = account.profile_image.url
+		context['hide_email'] = account.hide_email
+	
+		# Define template variables
+		is_self = True
+		is_friend = False
+		friend_requests = None
+		user = request.user
+		if user.is_authenticated and user != account:
+			is_self = False
+		
+		elif not user.is_authenticated:
+			is_self = False
+			
+		# Set the template variables to the values
+		context['is_self'] = is_self
+		context['is_friend'] = is_friend
+		context['BASE_URL'] = settings.BASE_URL
+		return render(request, "account/account.html", context)
 
