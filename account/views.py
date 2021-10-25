@@ -213,14 +213,6 @@ def crop_image(request, *args, **kwargs):
 
 
 def account_view(request, *args, **kwargs):
-	"""
-	- Logic 
-		is_self
-		is_friend
-			-1: NO_REQUEST_SENT
-			0: THEM_SENT_TO_YOU
-			1: YOU_SENT_TO_THEM
-	"""
 	context = {}
 	user_id = kwargs.get("user_id")
 	try:
@@ -237,7 +229,6 @@ def account_view(request, *args, **kwargs):
 		# Define template variables
 		is_self = True
 		is_friend = False
-		friend_requests = None
 		user = request.user
 		if user.is_authenticated and user != account:
 			is_self = False
